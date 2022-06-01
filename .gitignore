@@ -1,0 +1,48 @@
+# java
+.mtj.tmp/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+
+# scala
+*.class *.log
+
+# maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+pom.xml.bak
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# sbt
+target/
+project/target/
+project/plugins/project/
+build/
+.history
+.cache
+
+# metals/vscode
+.metals/
+.bloop/
+metals.sbt
+.vscode/
+.bsp/
+
+# intellij
+*.iml
+*.ipr
+*.iws
+.idea
+out
+
+# macOS
+.DS_Store
