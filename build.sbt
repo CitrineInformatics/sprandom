@@ -15,10 +15,10 @@ ThisBuild / sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
 ThisBuild / scmInfo := Some(
   ScmInfo(url("https://github.com/CitrineInformatics/random"), "scm:git@github.com:CitrineInformatics/random.git")
 )
+ThisBuild / pomIncludeRepository := { _ => false }
 
 lazy val commonSettings = Seq(
-  javaOptions ++= sys.env.getOrElse("JAVA_OPTS", "").split(" ").toSeq,
-  pomIncludeRepository := { _ => false }
+  javaOptions ++= sys.env.getOrElse("JAVA_OPTS", "").split(" ").toSeq
 )
 
 lazy val root = (project in file("."))
