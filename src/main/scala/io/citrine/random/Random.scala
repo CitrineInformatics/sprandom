@@ -1,34 +1,71 @@
 package io.citrine.random
 
-import java.util.SplittableRandom
+import io.citrine.random.generators.JavaSplittableRandomGenerator
+
 import scala.collection.BuildFrom
 import scala.collection.mutable.ArrayBuffer
 
-case class Random(init: Any = None) {
-  private val baseRng: SplittableRandom = init match {
-    case seed: Long             => new SplittableRandom(seed)
-    case seed: Int              => new SplittableRandom(seed.toLong)
-    case None                   => new SplittableRandom
-    case base: SplittableRandom => base
-    case seed: Any =>
-      throw new IllegalArgumentException(s"Random object initialized with inappropriate type: ${seed.getClass}.")
-  }
+trait Random {
 
   /**
     * Split off an independent parallel stream of random numbers.
     *
     * @return a new instance of Random whose stream of random numbers are independent of the present stream.
     */
-  def split(): Random = Random(baseRng.split())
+  def split(): Random
 
   /**
-    * Generate a uniformly random Long in a given interval.
+    * Generate a uniformly random Boolean.
+    *
+    * @return a random Boolean
+    */
+  def nextBoolean(): Boolean
+
+  /**
+    * Generate a uniformly random Double between zero (inclusive) and one (exclusive).
+    *
+    * @return a uniformly random number on the unit interval
+    */
+  def nextDouble(): Double
+
+  /**
+    * Generate a uniformly random Int on the whole allowed range.
+    *
+    * @return a random Int
+    */
+  def nextInt(): Int
+
+  /**
+    * Generate a uniformly random Int between zero and a given exclusive upper bound.
+    *
+    * @param bound exclusive upper bound
+    * @return a random Int between 0 (inclusive) and bound (exclusive)
+    */
+  def nextInt(bound: Int): Int
+
+  /**
+    * Generate a uniformly random Long on the whole allowed range.
+    *
+    * @return a random Long
+    */
+  def nextLong(): Long
+
+  /**
+    * Generate a uniformly random Long between zero and a given exclusive upper bound.
+    *
+    * @param bound exclusive upper bound
+    * @return a random Long between 0 (inclusive) and bound (exclusive)
+    */
+  def nextLong(bound: Long): Long
+
+  /**
+    * Generate a uniformly random Double in a given interval.
     *
     * @param minInclusive inclusive minimum of the interval
     * @param maxExclusive exclusive maximum of the interval
-    * @return uniformly random Long between minInclusive and maxExclusive
+    * @return uniformly random Double between minInclusive and maxExclusive
     */
-  def between(minInclusive: Long, maxExclusive: Long): Long = baseRng.nextLong(minInclusive, maxExclusive)
+  def between(minInclusive: Double, maxExclusive: Double): Double
 
   /**
     * Generate a uniformly random Int in a given interval.
@@ -40,60 +77,16 @@ case class Random(init: Any = None) {
     * @return
     *   uniformly random Int between minInclusive and maxExclusive
     */
-  def between(minInclusive: Int, maxExclusive: Int): Int = baseRng.nextInt(minInclusive, maxExclusive)
+  def between(minInclusive: Int, maxExclusive: Int): Int
 
   /**
-    * Generate a uniformly random Double in a given interval.
+    * Generate a uniformly random Long in a given interval.
     *
     * @param minInclusive inclusive minimum of the interval
     * @param maxExclusive exclusive maximum of the interval
-    * @return uniformly random Double between minInclusive and maxExclusive
+    * @return uniformly random Long between minInclusive and maxExclusive
     */
-  def between(minInclusive: Double, maxExclusive: Double): Double = baseRng.nextDouble(minInclusive, maxExclusive)
-
-  /**
-    * Generate a uniformly random Boolean.
-    *
-    * @return a random Boolean
-    */
-  def nextBoolean(): Boolean = baseRng.nextBoolean()
-
-  /**
-    * Generate a uniformly random Double between zero (inclusive) and one (exclusive).
-    *
-    * @return a uniformly random number on the unit interval
-    */
-  def nextDouble(): Double = baseRng.nextDouble()
-
-  /**
-    * Generate a uniformly random Int on the whole allowed range.
-    *
-    * @return a random Int
-    */
-  def nextInt(): Int = baseRng.nextInt()
-
-  /**
-    * Generate a uniformly random Int between zero and a given exclusive upper bound.
-    *
-    * @param bound exclusive upper bound
-    * @return a random Int between 0 (inclusive) and bound (exclusive)
-    */
-  def nextInt(bound: Int): Int = baseRng.nextInt(bound)
-
-  /**
-    * Generate a uniformly random Long on the whole allowed range.
-    *
-    * @return a random Long
-    */
-  def nextLong(): Long = baseRng.nextLong()
-
-  /**
-    * Generate a uniformly random Long between zero and a given exclusive upper bound.
-    *
-    * @param bound exclusive upper bound
-    * @return a random Long between 0 (inclusive) and bound (exclusive)
-    */
-  def nextLong(bound: Long): Long = baseRng.nextLong(bound)
+  def between(minInclusive: Long, maxExclusive: Long): Long
 
   /**
     * Generate a Gaussian-distributed random Double with mean 0 and variance 1
@@ -103,7 +96,7 @@ case class Random(init: Any = None) {
   def nextGaussian(): Double = {
     // This uses the Box-Muller transform.
     // It's a bit inefficient, especially since it throws away the second Gaussian available from the two uniforms.
-    Math.sqrt(-2.0 * Math.log(nextDouble())) * Math.cos(2.0 * Math.PI * nextDouble())
+    math.sqrt(-2.0 * math.log(nextDouble())) * math.cos(2.0 * math.Pi * nextDouble())
   }
 
   /**
@@ -143,4 +136,13 @@ case class Random(init: Any = None) {
 
     (bf.newBuilder(xs) ++= buf).result()
   }
+}
+
+object Random {
+
+  def default: Random = new JavaSplittableRandomGenerator(scala.util.Random.nextLong())
+
+  def apply(seed: Long = scala.util.Random.nextLong()): Random = new JavaSplittableRandomGenerator(seed)
+
+  def build(generator: RandomGenerator, seed: Long): Random = ???
 }

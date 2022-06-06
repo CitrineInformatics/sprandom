@@ -8,7 +8,7 @@ class RandomTest extends AnyFunSuite {
   test("Constructors appropriately use the passed seed or base RNG.") {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
-    val rngFromBaseRng = Random(baseRng)
+    val rngFromBaseRng = Random(seed)
     val rngFromSeed = Random(seed)
     assert(rngFromBaseRng.nextLong() == rngFromSeed.nextLong())
 
