@@ -21,7 +21,7 @@ protected[random] class ApacheXoRoShiRo128PlusPlusGenerator private (val baseRng
 object ApacheXoRoShiRo128PlusPlusGenerator {
   def apply(seed: Long): ApacheXoRoShiRo128PlusPlusGenerator = {
     // TODO: Does their public API support a way to avoid casting?
-    val baseRng = RandomSource.XO_SHI_RO_128_PP.create(seed).asInstanceOf[JumpableUniformRandomProvider]
+    val baseRng = RandomSource.XO_RO_SHI_RO_128_PP.create(seed).asInstanceOf[JumpableUniformRandomProvider]
     new ApacheXoRoShiRo128PlusPlusGenerator(baseRng)
   }
 }
