@@ -1,6 +1,6 @@
 package io.citrine.random
 
-import io.citrine.random.generators.{ApacheXoRoShiRo128PlusPlus, JavaSplittableRandomGenerator}
+import io.citrine.random.generators.{ApacheXoRoShiRo128PlusPlusGenerator, JavaSplittableRandomGenerator}
 
 import scala.collection.BuildFrom
 import scala.collection.mutable.ArrayBuffer
@@ -140,16 +140,16 @@ trait Random {
 
 object Random {
 
-  import RandomType._
+  import RandomGenerator._
 
   def default: Random = build(JavaSplittableRandom)
 
   def apply(seed: Long = scala.util.Random.nextLong()): Random = build(JavaSplittableRandom, seed)
 
-  def build(generator: RandomType, seed: Long = scala.util.Random.nextLong()): Random = {
+  def build(generator: RandomGenerator, seed: Long = scala.util.Random.nextLong()): Random = {
     generator match {
-      case JavaSplittableRandom       => JavaSplittableRandomGenerator(seed)
-      case ApacheXoRoShiRo128PlusPlus => ApacheXoRoShiRo128PlusPlus(seed)
+      case JavaSplittableRandom                => JavaSplittableRandomGenerator(seed)
+      case ApacheXoRoShiRo128PlusPlusGenerator => ApacheXoRoShiRo128PlusPlusGenerator(seed)
     }
   }
 }
