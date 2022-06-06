@@ -1,4 +1,4 @@
-package io.citrine.random
+package io.citrine.random.generators
 
 sealed trait RandomGenerator
 
