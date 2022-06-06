@@ -148,8 +148,8 @@ object Random {
 
   def build(generator: RandomType, seed: Long = scala.util.Random.nextLong()): Random = {
     generator match {
-      case JavaSplittableRandom       => new JavaSplittableRandomGenerator(seed)
-      case ApacheXoRoShiRo128PlusPlus => new ApacheXoRoShiRo128PlusPlus(seed)
+      case JavaSplittableRandom       => JavaSplittableRandomGenerator(seed)
+      case ApacheXoRoShiRo128PlusPlus => ApacheXoRoShiRo128PlusPlus(seed)
     }
   }
 }

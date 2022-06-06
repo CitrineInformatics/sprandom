@@ -6,10 +6,6 @@ import java.util.SplittableRandom
 
 protected[random] class JavaSplittableRandomGenerator private (val baseRng: SplittableRandom) extends Random {
 
-  def this(seed: Long) {
-    this(new SplittableRandom(seed))
-  }
-
   override def split(): Random = new JavaSplittableRandomGenerator(baseRng.split())
 
   override def nextBoolean(): Boolean = baseRng.nextBoolean()
@@ -32,4 +28,11 @@ protected[random] class JavaSplittableRandomGenerator private (val baseRng: Spli
 
   override def between(minInclusive: Long, maxExclusive: Long): Long =
     baseRng.nextLong(minInclusive, maxExclusive)
+}
+
+object JavaSplittableRandomGenerator {
+  def apply(seed: Long): JavaSplittableRandomGenerator = {
+    val baseRng = new SplittableRandom(seed)
+    new JavaSplittableRandomGenerator(baseRng)
+  }
 }
