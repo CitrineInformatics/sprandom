@@ -8,9 +8,8 @@ class RandomTest extends AnyFunSuite {
   test("Constructors appropriately use the passed seed or base RNG.") {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
-    val rngFromBaseRng = Random(seed)
     val rngFromSeed = Random(seed)
-    assert(rngFromBaseRng.nextLong() == rngFromSeed.nextLong())
+    assert(baseRng.nextLong() == rngFromSeed.nextLong())
 
     val rng0 = Random()
     val rng1 = Random()
@@ -107,9 +106,37 @@ class RandomTest extends AnyFunSuite {
     }
   }
 
-  test("The statistical properties of the nextGaussian() convenience function.") {}
+  test("Check the statistical properties of the shuffle function.") {
+    // Check that each value is rearranged to a new index with uniform probability over the possible new indices
+    val seed = 123894L
+    val rng = Random(seed)
 
-  test("Check statistical properties of shuffle.") {
-    // Check that each value is rearranged to a new index with uniform probability over the possible new
+    val nItems = 10
+    val inputs = (1 to nItems).toVector
+    var countInEachPosition =
+      inputs.map { x => x -> inputs.indices.map { i => i -> 0 }.toMap }.toMap[Int, Map[Int, Int]]
+
+    val nTrials = 100
+    (1 to nTrials).foreach { _ =>
+      val outputs = rng.shuffle(inputs)
+      assert(inputs == outputs.sorted)
+
+      outputs.zipWithIndex.foreach { case (x, i) =>
+        var thisItem = countInEachPosition(x)
+        thisItem += i -> (thisItem(i) + 1)
+        countInEachPosition += x -> thisItem
+      }
+    }
+
+    // Critical values for chi2 distribution with DOF=10-1=9
+    val chiSqCriticalValueLower = 2.088
+    val chiSqCriticalValueUpper = 21.66
+
+    val expected = nTrials.toDouble / nItems
+    countInEachPosition.foreach { case (_, m) =>
+      val chiSq = m.values.map { count => math.pow(count - expected, 2) / expected }.sum
+      assert(chiSq > chiSqCriticalValueLower)
+      assert(chiSq < chiSqCriticalValueUpper)
+    }
   }
 }

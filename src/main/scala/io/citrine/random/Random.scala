@@ -1,11 +1,9 @@
 package io.citrine.random
 
-import io.citrine.random.generators.{ApacheXoRoShiRo128PlusPlusGenerator, JavaSplittableRandomGenerator}
-
 import scala.collection.BuildFrom
 import scala.collection.mutable.ArrayBuffer
 
-trait Random {
+trait Random extends Serializable {
 
   /**
     * Split off an independent parallel stream of random numbers.
@@ -140,16 +138,8 @@ trait Random {
 
 object Random {
 
-  import RandomGenerator._
+  def apply(seed: Long = scala.util.Random.nextLong()): Random =
+    RandomFactory.from(GeneratorType.JavaSplittableRandom, seed)
 
-  def default: Random = build(JavaSplittableRandom)
-
-  def apply(seed: Long = scala.util.Random.nextLong()): Random = build(JavaSplittableRandom, seed)
-
-  def build(generator: RandomGenerator, seed: Long = scala.util.Random.nextLong()): Random = {
-    generator match {
-      case JavaSplittableRandom                => JavaSplittableRandomGenerator(seed)
-      case ApacheXoRoShiRo128PlusPlusGenerator => ApacheXoRoShiRo128PlusPlusGenerator(seed)
-    }
-  }
+  def default: Random = RandomFactory.from(GeneratorType.JavaSplittableRandom)
 }

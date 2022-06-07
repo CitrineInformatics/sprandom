@@ -4,7 +4,7 @@ import io.citrine.random.Random
 
 import java.util.SplittableRandom
 
-protected[random] class JavaSplittableRandomGenerator private (val baseRng: SplittableRandom) extends Random {
+protected[random] class JavaSplittableRandomGenerator(baseRng: SplittableRandom) extends Random {
 
   override def split(): Random = new JavaSplittableRandomGenerator(baseRng.split())
 
@@ -28,11 +28,4 @@ protected[random] class JavaSplittableRandomGenerator private (val baseRng: Spli
 
   override def between(minInclusive: Long, maxExclusive: Long): Long =
     baseRng.nextLong(minInclusive, maxExclusive)
-}
-
-object JavaSplittableRandomGenerator {
-  def apply(seed: Long): JavaSplittableRandomGenerator = {
-    val baseRng = new SplittableRandom(seed)
-    new JavaSplittableRandomGenerator(baseRng)
-  }
 }

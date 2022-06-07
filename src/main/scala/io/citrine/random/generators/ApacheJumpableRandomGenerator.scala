@@ -1,11 +1,14 @@
 package io.citrine.random.generators
 
 import io.citrine.random.Random
-import org.apache.commons.rng.UniformRandomProvider
+import org.apache.commons.rng.LongJumpableUniformRandomProvider
 
-protected[random] trait ApacheRandomGenerator extends Random {
+protected[random] class ApacheJumpableRandomGenerator(baseRng: LongJumpableUniformRandomProvider) extends Random {
 
-  def baseRng: UniformRandomProvider
+  override def split(): Random = {
+    val jumped = baseRng.longJump().asInstanceOf[LongJumpableUniformRandomProvider]
+    new ApacheJumpableRandomGenerator(jumped)
+  }
 
   def nextBoolean(): Boolean = baseRng.nextBoolean()
 
