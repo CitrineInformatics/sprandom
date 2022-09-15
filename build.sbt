@@ -2,10 +2,9 @@ import Dependencies._
 
 ThisBuild / scalaVersion := "2.13.8"
 ThisBuild / crossScalaVersions := List("2.13.8")
-ThisBuild / version := "0.0.1"
 ThisBuild / organization := "io.citrine"
 ThisBuild / organizationName := "Citrine Informatics"
-ThisBuild / homepage := Some(url("https://github.com/CitrineInformatics/random"))
+ThisBuild / homepage := Some(url("https://github.com/CitrineInformatics/sprandom"))
 ThisBuild / description := "Splittable, serializable pseudorandom number generation in Scala."
 ThisBuild / licenses += "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")
 
