@@ -6,14 +6,14 @@ ThisBuild / version := "0.0.1"
 ThisBuild / organization := "io.citrine"
 ThisBuild / organizationName := "Citrine Informatics"
 ThisBuild / homepage := Some(url("https://github.com/CitrineInformatics/random"))
-ThisBuild / description := "Reliable random number generation in Scala."
+ThisBuild / description := "Splittable, serializable pseudorandom number generation in Scala."
 ThisBuild / licenses += "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")
 
 // Publish settings
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 ThisBuild / sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
 ThisBuild / scmInfo := Some(
-  ScmInfo(url("https://github.com/CitrineInformatics/random"), "scm:git@github.com:CitrineInformatics/random.git")
+  ScmInfo(url("https://github.com/CitrineInformatics/sprandom"), "scm:git@github.com:CitrineInformatics/sprandom.git")
 )
 ThisBuild / pomIncludeRepository := { _ => false }
 
@@ -24,7 +24,7 @@ lazy val commonSettings = Seq(
 lazy val root = (project in file("."))
   .settings(commonSettings: _*)
   .settings(
-    name := "random",
+    name := "sprandom",
     libraryDependencies ++= commonDependencies,
     libraryDependencies ++= testDependencies.map(_ % Test)
   )
