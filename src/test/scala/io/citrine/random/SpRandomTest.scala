@@ -5,16 +5,22 @@ import java.io._
 import breeze.stats.distributions.{ChiSquared, RandBasis}
 import org.scalatest.funsuite.AnyFunSuite
 
-class RandomTest extends AnyFunSuite {
+class SpRandomTest extends AnyFunSuite {
 
   test("Constructors appropriately use the passed seed or base RNG.") {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
+<<<<<<< HEAD:src/test/scala/io/citrine/random/RandomTest.scala
     val rngFromSeed = Random(seed)
     assert(baseRng.nextLong() == rngFromSeed.nextLong())
+=======
+    val rngFromBaseRng = SpRandom(baseRng)
+    val rngFromSeed = SpRandom(seed)
+    assert(rngFromBaseRng.nextLong() == rngFromSeed.nextLong())
+>>>>>>> 9dc9364b72a2a555cafea319d360b257afd5faa9:src/test/scala/io/citrine/random/SpRandomTest.scala
 
-    val rng0 = Random()
-    val rng1 = Random()
+    val rng0 = SpRandom()
+    val rng1 = SpRandom()
     assert(rng0.nextLong() != rng1.nextLong())
   }
 
@@ -48,7 +54,7 @@ class RandomTest extends AnyFunSuite {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
     val baseRngSplit = baseRng.split()
-    val rng = Random(seed)
+    val rng = SpRandom(seed)
     val rngSplit = rng.split()
     assert(baseRngSplit.nextLong() == rngSplit.nextLong())
     val rngSplitAgain = rng.split()
@@ -59,7 +65,7 @@ class RandomTest extends AnyFunSuite {
   test("between() works for Long-valued bounds.") {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
-    val rng = Random(seed)
+    val rng = SpRandom(seed)
 
     val min = 12L
     val max = 3127974L
@@ -71,7 +77,7 @@ class RandomTest extends AnyFunSuite {
   test("between() works for Int-valued bounds.") {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
-    val rng = Random(seed)
+    val rng = SpRandom(seed)
 
     val min = 12
     val max = 3127974
@@ -83,7 +89,7 @@ class RandomTest extends AnyFunSuite {
   test("between() works for Double-valued bounds.") {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
-    val rng = Random(seed)
+    val rng = SpRandom(seed)
 
     val min = 1.1243
     val max = 22.1331
@@ -95,7 +101,7 @@ class RandomTest extends AnyFunSuite {
   test("nextBoolean() passes the call off to the baseRng.") {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
-    val rng = Random(seed)
+    val rng = SpRandom(seed)
 
     (1 to 10).foreach { _ =>
       assert(baseRng.nextBoolean() == rng.nextBoolean())
@@ -105,7 +111,7 @@ class RandomTest extends AnyFunSuite {
   test("nextDouble() passes the call off to the baseRng.") {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
-    val rng = Random(seed)
+    val rng = SpRandom(seed)
 
     (1 to 10).foreach { _ =>
       assert(baseRng.nextDouble() == rng.nextDouble())
@@ -115,7 +121,7 @@ class RandomTest extends AnyFunSuite {
   test("nextInt() passes the call off to the baseRng.") {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
-    val rng = Random(seed)
+    val rng = SpRandom(seed)
 
     (1 to 10).foreach { _ =>
       assert(baseRng.nextInt == rng.nextInt())
@@ -126,7 +132,7 @@ class RandomTest extends AnyFunSuite {
   test("nextLong() passes the call off to the baseRng.") {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
-    val rng = Random(seed)
+    val rng = SpRandom(seed)
 
     (1 to 10).foreach { _ =>
       assert(baseRng.nextLong == rng.nextLong())
