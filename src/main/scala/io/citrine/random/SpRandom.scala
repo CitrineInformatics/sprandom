@@ -1,8 +1,5 @@
 package io.citrine.random
 
-import breeze.stats.distributions.{RandBasis, ThreadLocalRandomGenerator}
-import org.apache.commons.math3.random.MersenneTwister
-
 import java.util.SplittableRandom
 import scala.collection.BuildFrom
 import scala.collection.mutable.ArrayBuffer
@@ -172,13 +169,9 @@ object SpRandom {
   def apply(seed: Long): SpRandom = new SpRandom(LongSeed(seed))
   def apply(seed: SpRandom): SpRandom = new SpRandom(RngSeed(seed))
 
-  /** Construct a default Random object seeded from the global RNG. */
+  /** Construct a default SpRandom object seeded from the global RNG. */
   def default: SpRandom = SpRandom(scala.util.Random.nextLong())
 
   /** Construct a scala Random object from the random state. */
   def scalaRandom(rng: SpRandom): scala.util.Random = new scala.util.Random(rng.nextLong())
-
-  /** Construct a breeze RandBasis object from the random state. */
-  def breezeRandBasis(rng: SpRandom): RandBasis =
-    new RandBasis(new ThreadLocalRandomGenerator(new MersenneTwister(rng.nextLong())))
 }
