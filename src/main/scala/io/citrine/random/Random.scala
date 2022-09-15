@@ -9,7 +9,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class Random private (seed: Random.RandomSeed) extends Serializable {
   @transient private lazy val baseRng: SplittableRandom = seed match {
-    case Random.EmptySeed()     => new SplittableRandom()
+    case Random.EmptySeed()     => new SplittableRandom
     case Random.IntSeed(value)  => new SplittableRandom(value.toLong)
     case Random.LongSeed(value) => new SplittableRandom(value)
     case Random.RngSeed(value)  => value.baseRng.split()
@@ -154,7 +154,7 @@ class Random private (seed: Random.RandomSeed) extends Serializable {
     * @return a collection of type CC[(Random, T)] with elements zipped with split random generators
     */
   def zip[T, CC[X] <: IterableOnce[X]](
-    xs: CC[T]
+      xs: CC[T]
   )(implicit bf: BuildFrom[CC[T], (Random, T), CC[(Random, T)]]): CC[(Random, T)] = {
     bf.fromSpecific(xs)(xs.iterator.map(x => (split(), x)))
   }

@@ -26,7 +26,7 @@ class RandomTest extends AnyFunSuite {
       val tmpFile: File = File.createTempFile("tmp", ".csv")
       tmpFile.deleteOnExit()
       // val outStream = new FileOutputStream(tmpFile)
-      val outStream = new ByteArrayOutputStream()
+      val outStream = new ByteArrayOutputStream
       val oos: ObjectOutputStream = new ObjectOutputStream(outStream)
       oos.writeObject(obj)
       oos.close()
@@ -145,9 +145,8 @@ class RandomTest extends AnyFunSuite {
 
     // Kolmogorov-Smirnov statistic  against normal with known mean m and standard deviation std.
     def ks(X: Seq[Double], m: Double, std: Double): Double = {
-      X.sorted.zipWithIndex.map {
-        case (x, i) =>
-          Math.abs(i / X.length.toDouble - cdfStandardNormal((x - m) / std))
+      X.sorted.zipWithIndex.map { case (x, i) =>
+        Math.abs(i / X.length.toDouble - cdfStandardNormal((x - m) / std))
       }.max
     }
 
@@ -184,22 +183,20 @@ class RandomTest extends AnyFunSuite {
       val outputs = rng.shuffle(inputs)
       assert(inputs == outputs.sorted)
 
-      outputs.zipWithIndex.foreach {
-        case (x, i) =>
-          var thisItem = countInEachPosition(x)
-          thisItem += (i -> (thisItem(i) + 1))
-          countInEachPosition += (x -> thisItem)
+      outputs.zipWithIndex.foreach { case (x, i) =>
+        var thisItem = countInEachPosition(x)
+        thisItem += i -> (thisItem(i) + 1)
+        countInEachPosition += x -> thisItem
       }
     }
     val expected = nTrials.toDouble / nItems
     val chiSqDist = ChiSquared(nItems.toDouble - 1)(RandBasis.withSeed(rng.nextInt()))
     val chiSqCriticalValueLower = chiSqDist.inverseCdf(0.01)
     val chiSqCriticalValueUpper = chiSqDist.inverseCdf(0.99)
-    countInEachPosition.foreach {
-      case (_, m) =>
-        val chiSq = m.values.map { count => Math.pow(count - expected, 2) / expected }.sum
-        assert(chiSq > chiSqCriticalValueLower)
-        assert(chiSq < chiSqCriticalValueUpper)
+    countInEachPosition.foreach { case (_, m) =>
+      val chiSq = m.values.map { count => Math.pow(count - expected, 2) / expected }.sum
+      assert(chiSq > chiSqCriticalValueLower)
+      assert(chiSq < chiSqCriticalValueUpper)
     }
   }
 }
