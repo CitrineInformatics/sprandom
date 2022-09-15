@@ -16,7 +16,7 @@ SpRandom builds on top of java.util.SplittableRandom by adding the following:
 An `SpRandom` object can be instantiated from an integer seed, a long seed, or another `SpRandom` object.
 
 ```scala
-import io.citrine.sprandom
+import io.citrine.random.SpRandom
 
 val rng = SpRandom(17L)
 val rng2 = rng.split() // an independent stream
