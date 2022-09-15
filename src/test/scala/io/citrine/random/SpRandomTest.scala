@@ -10,14 +10,8 @@ class SpRandomTest extends AnyFunSuite {
   test("Constructors appropriately use the passed seed or base RNG.") {
     val seed = 23794L
     val baseRng = new SplittableRandom(seed)
-<<<<<<< HEAD:src/test/scala/io/citrine/random/RandomTest.scala
-    val rngFromSeed = Random(seed)
-    assert(baseRng.nextLong() == rngFromSeed.nextLong())
-=======
-    val rngFromBaseRng = SpRandom(baseRng)
     val rngFromSeed = SpRandom(seed)
-    assert(rngFromBaseRng.nextLong() == rngFromSeed.nextLong())
->>>>>>> 9dc9364b72a2a555cafea319d360b257afd5faa9:src/test/scala/io/citrine/random/SpRandomTest.scala
+    assert(baseRng.nextLong() == rngFromSeed.nextLong())
 
     val rng0 = SpRandom()
     val rng1 = SpRandom()
@@ -25,8 +19,8 @@ class SpRandomTest extends AnyFunSuite {
   }
 
   test("Random can be round-trip serialized.") {
-    val seed = Random(23794L)
-    val rng = Random(seed)
+    val seed = SpRandom(23794L)
+    val rng = SpRandom(seed)
 
     def roundRobinBinary[T](obj: T): T = {
       val tmpFile: File = File.createTempFile("tmp", ".csv")
@@ -142,7 +136,7 @@ class SpRandomTest extends AnyFunSuite {
 
   test("The statistical properties of the nextGaussian() convenience function.") {
     val seed = 2934L
-    val rng = Random(seed)
+    val rng = SpRandom(seed)
     val nSamples = 1000
 
     def cdfStandardNormal(x: Double): Double = {
@@ -177,7 +171,7 @@ class SpRandomTest extends AnyFunSuite {
 
   test("Check statistical properties of shuffle.") {
     val seed = 123894L
-    val rng = Random(seed)
+    val rng = SpRandom(seed)
 
     val nItems = 10
     val inputs = (1 to nItems).toVector
