@@ -5,7 +5,7 @@ Splittable, serializable pseudorandom number generation in Scala.
 SpRandom produces random numbers that are reproducible in a multi-threaded context.
 It also allows the random state to be serialized and deserialized.
 
-SpRandom builds on top of java.util.SplittableRandom.
+SpRandom builds on top of the `java.util.SplittableRandom` class.
 It exposes the following features:
 * A `zip` method that facilitates reproducibility in a multi-threaded context
 * Serializability by persisting the underlying seed (SplittableRandom is not serializable)
