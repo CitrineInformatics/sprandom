@@ -4,20 +4,20 @@ import java.util.SplittableRandom
 import scala.collection.BuildFrom
 import scala.collection.mutable.ArrayBuffer
 
-class SpRandom private (seed: SpRandom.RandomSeed) extends Serializable {
+class Random private (seed: Random.RandomSeed) extends Serializable {
   @transient private lazy val baseRng: SplittableRandom = seed match {
-    case SpRandom.EmptySeed()     => new SplittableRandom
-    case SpRandom.IntSeed(value)  => new SplittableRandom(value.toLong)
-    case SpRandom.LongSeed(value) => new SplittableRandom(value)
-    case SpRandom.RngSeed(value)  => value.baseRng.split()
+    case Random.EmptySeed()     => new SplittableRandom
+    case Random.IntSeed(value)  => new SplittableRandom(value.toLong)
+    case Random.LongSeed(value) => new SplittableRandom(value)
+    case Random.RngSeed(value)  => value.baseRng.split()
   }
 
   /**
     * Split off an independent parallel stream of random numbers.
     *
-    * @return a new instance of SpRandom whose stream of random numbers are independent of the present stream.
+    * @return a new instance of Random whose stream of random numbers are independent of the present stream.
     */
-  def split(): SpRandom = SpRandom(this)
+  def split(): Random = Random(this)
 
   /**
     * Generate a uniformly random Long in a given interval.
@@ -152,26 +152,26 @@ class SpRandom private (seed: SpRandom.RandomSeed) extends Serializable {
     */
   def zip[T, CC[X] <: IterableOnce[X]](
       xs: CC[T]
-  )(implicit bf: BuildFrom[CC[T], (SpRandom, T), CC[(SpRandom, T)]]): CC[(SpRandom, T)] = {
+  )(implicit bf: BuildFrom[CC[T], (Random, T), CC[(Random, T)]]): CC[(Random, T)] = {
     bf.fromSpecific(xs)(xs.iterator.map(x => (split(), x)))
   }
 }
 
-object SpRandom {
+object Random {
   sealed trait RandomSeed
   case class EmptySeed() extends RandomSeed
   case class IntSeed(value: Int) extends RandomSeed
   case class LongSeed(value: Long) extends RandomSeed
-  case class RngSeed(value: SpRandom) extends RandomSeed
+  case class RngSeed(value: Random) extends RandomSeed
 
-  def apply(): SpRandom = new SpRandom(EmptySeed())
-  def apply(seed: Int): SpRandom = new SpRandom(IntSeed(seed))
-  def apply(seed: Long): SpRandom = new SpRandom(LongSeed(seed))
-  def apply(seed: SpRandom): SpRandom = new SpRandom(RngSeed(seed))
+  def apply(): Random = new Random(EmptySeed())
+  def apply(seed: Int): Random = new Random(IntSeed(seed))
+  def apply(seed: Long): Random = new Random(LongSeed(seed))
+  def apply(seed: Random): Random = new Random(RngSeed(seed))
 
-  /** Construct a default SpRandom object seeded from the global RNG. */
-  def default: SpRandom = SpRandom(scala.util.Random.nextLong())
+  /** Construct a default Random object seeded from the global RNG. */
+  def default: Random = Random(scala.util.Random.nextLong())
 
   /** Construct a scala Random object from the random state. */
-  def scalaRandom(rng: SpRandom): scala.util.Random = new scala.util.Random(rng.nextLong())
+  def scalaRandom(rng: Random): scala.util.Random = new scala.util.Random(rng.nextLong())
 }
