@@ -4,14 +4,12 @@ import java.util.SplittableRandom
 import scala.collection.BuildFrom
 import scala.collection.mutable.ArrayBuffer
 
-case class Random(init: Any = None) {
-  private val baseRng: SplittableRandom = init match {
-    case seed: Long             => new SplittableRandom(seed)
-    case seed: Int              => new SplittableRandom(seed.toLong)
-    case None                   => new SplittableRandom
-    case base: SplittableRandom => base
-    case seed: Any =>
-      throw new IllegalArgumentException(s"Random object initialized with inappropriate type: ${seed.getClass}.")
+class Random private (seed: Random.RandomSeed) extends Serializable {
+  @transient private lazy val baseRng: SplittableRandom = seed match {
+    case Random.EmptySeed()     => new SplittableRandom
+    case Random.IntSeed(value)  => new SplittableRandom(value.toLong)
+    case Random.LongSeed(value) => new SplittableRandom(value)
+    case Random.RngSeed(value)  => value.baseRng.split()
   }
 
   /**
@@ -19,7 +17,7 @@ case class Random(init: Any = None) {
     *
     * @return a new instance of Random whose stream of random numbers are independent of the present stream.
     */
-  def split(): Random = Random(baseRng.split())
+  def split(): Random = Random(this)
 
   /**
     * Generate a uniformly random Long in a given interval.
@@ -33,12 +31,9 @@ case class Random(init: Any = None) {
   /**
     * Generate a uniformly random Int in a given interval.
     *
-    * @param minInclusive
-    *   inclusive minimum of the interval
-    * @param maxExclusive
-    *   exclusive maximum of the interval
-    * @return
-    *   uniformly random Int between minInclusive and maxExclusive
+    * @param minInclusive inclusive minimum of the interval
+    * @param maxExclusive exclusive maximum of the interval
+    * @return uniformly random Int between minInclusive and maxExclusive
     */
   def between(minInclusive: Int, maxExclusive: Int): Int = baseRng.nextInt(minInclusive, maxExclusive)
 
@@ -143,4 +138,40 @@ case class Random(init: Any = None) {
 
     (bf.newBuilder(xs) ++= buf).result()
   }
+
+  /**
+    * Zip the rng with the iterable collection, splitting the rng on each new element.
+    *
+    * This method is useful for producing a stream of independent random generators for multi-threaded applications.
+    *
+    * @param xs the collection to zip with
+    * @param bf builder for type CC[(Random, T)] from type CC[T]
+    * @tparam T  the type of elements in xs
+    * @tparam CC the type of collection
+    * @return a collection of type CC[(Random, T)] with elements zipped with split random generators
+    */
+  def zip[T, CC[X] <: IterableOnce[X]](
+      xs: CC[T]
+  )(implicit bf: BuildFrom[CC[T], (Random, T), CC[(Random, T)]]): CC[(Random, T)] = {
+    bf.fromSpecific(xs)(xs.iterator.map(x => (split(), x)))
+  }
+}
+
+object Random {
+  sealed trait RandomSeed
+  case class EmptySeed() extends RandomSeed
+  case class IntSeed(value: Int) extends RandomSeed
+  case class LongSeed(value: Long) extends RandomSeed
+  case class RngSeed(value: Random) extends RandomSeed
+
+  def apply(): Random = new Random(EmptySeed())
+  def apply(seed: Int): Random = new Random(IntSeed(seed))
+  def apply(seed: Long): Random = new Random(LongSeed(seed))
+  def apply(seed: Random): Random = new Random(RngSeed(seed))
+
+  /** Construct a default Random object seeded from the global RNG. */
+  def default: Random = Random(scala.util.Random.nextLong())
+
+  /** Construct a scala Random object from the random state. */
+  def scalaRandom(rng: Random): scala.util.Random = new scala.util.Random(rng.nextLong())
 }
