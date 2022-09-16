@@ -1,3 +1,3 @@
-# random
+# sprandom
 
-Reliable random number generation in Scala.
+Splittable, serializable pseudorandom number generation in Scala.
