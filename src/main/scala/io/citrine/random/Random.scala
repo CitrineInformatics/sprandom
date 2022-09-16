@@ -4,7 +4,7 @@ import java.util.SplittableRandom
 import scala.collection.BuildFrom
 import scala.collection.mutable.ArrayBuffer
 
-case class SpRandom(init: Any = None) {
+case class Random(init: Any = None) {
   private val baseRng: SplittableRandom = init match {
     case seed: Long             => new SplittableRandom(seed)
     case seed: Int              => new SplittableRandom(seed.toLong)
@@ -19,7 +19,7 @@ case class SpRandom(init: Any = None) {
     *
     * @return a new instance of Random whose stream of random numbers are independent of the present stream.
     */
-  def split(): SpRandom = SpRandom(baseRng.split())
+  def split(): Random = Random(baseRng.split())
 
   /**
     * Generate a uniformly random Long in a given interval.
