@@ -4,6 +4,12 @@ ThisBuild / scalaVersion := "2.13.4"
 ThisBuild / organization := "io.citrine"
 ThisBuild / organizationName := "Citrine Informatics"
 ThisBuild / homepage := Some(url("https://github.com/CitrineInformatics/sprandom"))
+ThisBuild / developers := List(Developer(
+  id="Citrine",
+  name="Citrine Informatics",
+  email="public-repository@citrine.io",
+  url=url("https://github.com/CitrineInformatics")
+))
 ThisBuild / description := "Splittable, serializable pseudorandom number generation in Scala."
 ThisBuild / licenses += "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")
 
