@@ -1,7 +1,6 @@
 import Dependencies._
 
-ThisBuild / scalaVersion := "2.13.8"
-ThisBuild / crossScalaVersions := List("2.13.8")
+ThisBuild / scalaVersion := "2.13.4"
 ThisBuild / organization := "io.citrine"
 ThisBuild / organizationName := "Citrine Informatics"
 ThisBuild / homepage := Some(url("https://github.com/CitrineInformatics/sprandom"))
