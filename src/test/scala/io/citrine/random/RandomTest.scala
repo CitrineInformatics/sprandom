@@ -4,6 +4,7 @@ import java.util.SplittableRandom
 import java.io._
 import breeze.stats.distributions.{ChiSquared, RandBasis}
 import org.scalatest.funsuite.AnyFunSuite
+import scala.collection.parallel.CollectionConverters.IterableIsParallelizable
 
 class RandomTest extends AnyFunSuite {
 
@@ -198,5 +199,16 @@ class RandomTest extends AnyFunSuite {
       assert(chiSq > chiSqCriticalValueLower)
       assert(chiSq < chiSqCriticalValueUpper)
     }
+  }
+
+  test("Check deterministic behavior of zip when applied to a parallel operation") {
+    val seed = 718352L
+    val iterator = Range(0, 10).toVector
+    val allResults = (0 until 5).map { _ =>
+      val rng = Random(seed)
+      rng.zip(iterator).par.map { case (thisRng, _) => thisRng.nextLong() }.toVector
+    }
+    val firstResult = allResults.head
+    allResults.tail.foreach(thisResult => assert(thisResult == firstResult))
   }
 }
