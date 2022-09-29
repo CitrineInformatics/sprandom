@@ -17,7 +17,12 @@ class Random private (seed: Random.RandomSeed) extends Serializable {
     *
     * @return a new instance of Random whose stream of random numbers are independent of the present stream.
     */
-  def split(): Random = Random(this)
+  def split(): Random = {
+    val split = Random(this)
+    // Underlying split occurs lazily and must be triggered, otherwise non-determinstic behavior can result.
+    split.baseRng
+    split
+  }
 
   /**
     * Generate a uniformly random Long in a given interval.
