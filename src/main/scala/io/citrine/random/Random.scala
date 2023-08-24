@@ -5,9 +5,9 @@ import scala.collection.BuildFrom
 import scala.collection.mutable.ArrayBuffer
 
 class Random private (seed: Random.RandomSeed) extends Serializable {
+
   @transient private lazy val baseRng: SplittableRandom = seed match {
     case Random.EmptySeed()     => new SplittableRandom
-    case Random.IntSeed(value)  => new SplittableRandom(value.toLong)
     case Random.LongSeed(value) => new SplittableRandom(value)
     case Random.RngSeed(value)  => value.baseRng.split()
   }
@@ -163,16 +163,26 @@ class Random private (seed: Random.RandomSeed) extends Serializable {
 }
 
 object Random {
-  sealed trait RandomSeed
-  case class EmptySeed() extends RandomSeed
-  case class IntSeed(value: Int) extends RandomSeed
-  case class LongSeed(value: Long) extends RandomSeed
-  case class RngSeed(value: Random) extends RandomSeed
+
+  sealed private trait RandomSeed
+  private case class EmptySeed() extends RandomSeed
+  private case class LongSeed(value: Long) extends RandomSeed
+  private case class RngSeed(value: Random) extends RandomSeed
 
   def apply(): Random = new Random(EmptySeed())
-  def apply(seed: Int): Random = new Random(IntSeed(seed))
-  def apply(seed: Long): Random = new Random(LongSeed(seed))
+
   def apply(seed: Random): Random = new Random(RngSeed(seed))
+
+  def apply(seed: Int): Random = new Random(LongSeed(seed.toLong))
+
+  def apply(seed: Long): Random = new Random(LongSeed(seed))
+
+  def apply(seed: Option[Long]): Random = {
+    seed match {
+      case Some(x) => new Random(LongSeed(x))
+      case _       => new Random(EmptySeed())
+    }
+  }
 
   /** Construct a default Random object seeded from the global RNG. */
   def default: Random = Random(scala.util.Random.nextLong())
