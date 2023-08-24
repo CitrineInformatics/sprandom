@@ -163,6 +163,7 @@ class Random private (seed: Random.RandomSeed) extends Serializable {
 }
 
 object Random {
+
   sealed private trait RandomSeed
   private case class EmptySeed() extends RandomSeed
   private case class LongSeed(value: Long) extends RandomSeed
