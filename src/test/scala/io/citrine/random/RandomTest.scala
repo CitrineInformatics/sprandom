@@ -211,4 +211,21 @@ class RandomTest extends AnyFunSuite {
     val firstResult = allResults.head
     allResults.tail.foreach(thisResult => assert(thisResult == firstResult))
   }
+
+  test("Random can be seeded with optional values") {
+    val seed: Long = 53
+    val optionSeed: Option[Long] = Some(seed)
+    val emptySeed: Option[Long] = None
+
+    val direct = Random(seed)
+    val indirect = Random(optionSeed)
+    val empty = Random(emptySeed)
+
+    val directValue = direct.nextLong()
+    val indirectValue = indirect.nextLong()
+    val emptyValue = empty.nextLong()
+
+    assert(directValue == indirectValue)
+    assert(directValue != emptyValue)
+  }
 }
