@@ -28,7 +28,7 @@ jobs:
         distribution: 'temurin'
         cache: 'sbt'
     - name: Run formatting check
-        run: sbt scalafmtCheckAll
+      run: sbt scalafmtCheckAll
     - name: Run tests
       run: sbt +test
       # Optional: This step uploads information to the GitHub dependency graph and unblocking Dependabot alerts for the repository
